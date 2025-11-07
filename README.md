@@ -93,6 +93,7 @@ Le diagramme suivant représente les relations entre les entités principales du
 ## 🧍 Patient
 
 - GET /patients/all → Afficher tous les patients
+- GET /patients/paged-text?page=0&size=5&sortBy=nom → Afficher tous les patients sous forme des pages ou chaque page conte 5 patients sorted selon leurs noms
 
 - POST /patients/add → Ajouter un patient
 
@@ -127,14 +128,25 @@ Dans ce projet MedTrack, j'ai implémenté plusieurs améliorations pour renforc
 - **Utilisation de DTOs (Data Transfer Objects)** : Pour séparer les données de l'API des entités de base de données, j'ai créé des DTOs légers pour `Medicament` et `Prise`. Exemples :
     - `MedicamentDTO` : Contient seulement les champs essentiels (`nom`, `dose`, `frequence`, `patientId`) pour éviter l'exposition de données internes et optimiser les transferts.
     - `PriseDTO` : Inclut `heure`, `date` et `medicamentId`, permettant une gestion précise des prises de médicaments sans surcharger l'API.
+    - `PatientDTO` : Inclut  nom , prenom , age, maladie et medecinId permettant une gestion precis des patients selon un medecin precis sans surcharger l'API.
       Ces DTOs facilitent la validation et la transformation des données, tout en protégeant contre les fuites d'informations sensibles.
+
+- **Gestion Centralisée des Exceptions** : J’ai ajouté un Global Exception Handler avec:
+    - Une exception personnalisée : `ResourceNotFoundException`
+    - Une classe `@RestControllerAdvice` pour gérer toutes les erreurs
+      Le système renvoie automatiquement des réponses claires et structurées.
+  
+- **Pagination & Tri des Patients** : J’ai ajouté un endpoint permettant:
+    - La pagination (page, size)
+    - Le tri (sortBy, ex. : nom, prenom, age)
+    - Exemple : `GET /patients/paged-text?page=0&size=5&sortBy=nom`
+      Cette pagination rend le chargement rapide même avec beaucoup de données
 
 Ces améliorations ont été choisies pour :
 - **Sécurité** : Les validations et DTOs empêchent les données invalides ou malicieuses, protégeant l'application contre les attaques courantes (ex. : injection de données).
-- **Maintenabilité** : Elles rendent le code modulaire – facile à tester et à étendre (par exemple, ajouter de nouvelles entités comme `Medecin`).
-- **Performance** : Les DTOs réduisent la quantité de données transférées via l'API, accélérant les réponses.
-- **Conformité aux bonnes pratiques** : Elles suivent les conventions de Spring Boot, facilitant l'intégration avec un front-end (ex. : React ou Angular) et les tests unitaires.
-
+- **Maintenabilité** : gestion d’erreurs centralisée, code propre et facile à maintenir
+- **Performance** : pagination, DTOs plus légers.
+- **Conformité aux bonnes pratiques** : architecture claire, API robuste et évolutive
 ---
 
 ## 👩‍💻 Auteur
